@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8"> <!-- 设置文档字符编码为UTF-8，支持中文 -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- 响应式视口设置，适配移动端设备 -->
+    <title>登录</title> <!-- 浏览器标签页显示的标题 -->
+    <style>
+        /* ----- 全局样式重置与基础设置 ----- */
+        * {
+            margin: 0;      /* 清除所有元素默认外边距 */
+            padding: 0;     /* 清除所有元素默认内边距 */
+            box-sizing: border-box; /* 盒模型设置为边框盒模型（width包含padding和border） */
+        }
+
+        body {
+            font-family: system-ui, 'Segoe UI', sans-serif; /* 使用系统默认字体，保证跨平台一致性 */
+            background: #f0f2f5; /* 设置页面背景色为浅灰蓝色 */
+            min-height: 100vh; /* 最小高度为视口全高，确保垂直居中生效 */
+            display: flex; /* 启用Flex弹性布局 */
+            justify-content: center; /* 水平居中子元素 */
+            align-items: center; /* 垂直居中子元素 */
+        }
+
+        /* ----- 登录卡片容器样式 ----- */
+        .login-box {
+            background: white; /* 白色背景，与页面背景形成对比 */
+            padding: 40px 35px; /* 内边距：上下40px，左右35px，让内容不贴边 */
+            border-radius: 16px; /* 圆角16像素，卡片更柔和 */
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* 轻微阴影，增加立体感 */
+            width: 100%; /* 宽度占满父容器限制 */
+            max-width: 400px; /* 最大宽度400px，避免在大屏幕上过宽 */
+            text-align: center; /* 内部文本水平居中（标题和副标题） */
+        }
+
+        /* ----- 主标题样式 ----- */
+        h2 {
+            font-size: 24px; /* 标题字号24px */
+            font-weight: 600; /* 字重半粗体 */
+            margin-bottom: 8px; /* 下边距8px，与副标题拉开距离 */
+            color: #1a1a1a; /* 深灰色，清晰易读 */
+        }
+
+        /* ----- 副标题样式 ----- */
+        .sub {
+            color: #666; /* 中灰色，降低视觉权重 */
+            font-size: 14px; /* 字号14px */
+            margin-bottom: 30px; /* 下边距30px，与表单区域分离 */
+        }
+
+        /* ----- 每个输入组（标签+输入框）的容器样式 ----- */
+        .input-group {
+            text-align: left; /* 内部文字左对齐（标签靠左） */
+            margin-bottom: 20px; /* 下边距20px，分隔不同的输入组 */
+        }
+
+        /* ----- 输入框上方的标签样式 ----- */
+        .input-group label {
+            display: block; /* 块级元素，独占一行 */
+            font-size: 14px; /* 字号14px */
+            font-weight: 500; /* 字重中等 */
+            margin-bottom: 6px; /* 与输入框间距6px */
+            color: #333; /* 深灰色文字 */
+        }
+
+        /* ----- 文本输入框样式 ----- */
+        .input-group input {
+            width: 100%; /* 宽度填满父容器 */
+            padding: 12px 14px; /* 内边距：上下12px，左右14px，让输入框有舒适高度 */
+            font-size: 14px; /* 输入文字字号14px */
+            border: 1px solid #ddd; /* 浅灰色边框，默认状态 */
+            border-radius: 8px; /* 圆角8px，圆润边框 */
+            outline: none; /* 去除默认聚焦外发光（后续自定义） */
+            transition: 0.2s; /* 过渡动画，让聚焦效果更平滑 */
+        }
+
+        /* ----- 输入框获得焦点时的样式 ----- */
+        .input-group input:focus {
+            border-color: #4a90e2; /* 边框变为品牌蓝色 */
+            box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.2); /* 添加浅蓝色外发光，增强交互反馈 */
+        }
+
+        /* ----- 登录按钮样式 ----- */
+        button {
+            width: 100%; /* 宽度填满父容器 */
+            padding: 12px; /* 上下左右内边距12px，按钮高度舒适 */
+            background: #4a90e2; /* 品牌蓝色背景 */
+            color: white; /* 白色文字 */
+            border: none; /* 无边框 */
+            border-radius: 8px; /* 圆角8px */
+            font-size: 16px; /* 字号稍大，突出按钮文字 */
+            font-weight: 600; /* 半粗体 */
+            cursor: pointer; /* 鼠标悬停显示手型，提示可点击 */
+            margin-top: 10px; /* 上边距10px，与上方输入组略微分开 */
+            transition: background 0.2s; /* 背景色过渡动画 */
+        }
+
+        /* ----- 按钮悬停效果 ----- */
+        button:hover {
+            background: #3a7bc8; /* 悬停时背景色加深，给予反馈 */
+        }
+
+        /* ----- 消息提示区域样式 ----- */
+        .message {
+            margin-top: 16px; /* 上边距16px，与按钮分离 */
+            font-size: 13px; /* 字号13px，较小提示文字 */
+            color: #e74c3c; /* 默认红色（用于错误提示），后续JS可能动态覆盖颜色 */
+            min-height: 40px; /* 最小高度40px，避免消息出现时布局跳动 */
+        }
+    </style>
+</head>
+<body>
+    <!-- 登录卡片主容器 -->
+    <div class="login-box">
+        <!-- 欢迎标题区域，完全按照图片要求：欢迎使用！您好，请登录 -->
+        <h2>欢迎使用！</h2>
+        <div class="sub">您好，请登录</div>
+
+        <!-- 登录表单，用户输入账号密码并提交 -->
+        <form id="loginForm">
+            <!-- 账号输入组 -->
+            <div class="input-group">
+                <label>账号</label> <!-- 字段标签：账号 -->
+                <!-- 文本输入框，id用于JS快速获取，placeholder显示浅色占位提示 -->
+                <input type="text" id="account" placeholder="请输入账号" autocomplete="off">
+            </div>
+
+            <!-- 密码输入组 -->
+            <div class="input-group">
+                <label>密码</label> <!-- 字段标签：密码 -->
+                <!-- 密码输入框，type="password" 自动掩盖输入的字符 -->
+                <input type="password" id="password" placeholder="请输入密码">
+            </div>
+
+            <!-- 登录按钮，type="submit" 触发表单提交事件 -->
+            <button type="submit">登录</button>
+            <!-- 动态消息显示区域，用于反馈表单校验结果或登录状态 -->
+            <div id="message" class="message"></div>
+        </form>
+    </div>
+
+    <script>
+        // ----- DOM 元素获取 -----
+        const form = document.getElementById('loginForm');   // 获取表单元素
+        const account = document.getElementById('account'); // 获取账号输入框
+        const password = document.getElementById('password');// 获取密码输入框
+        const message = document.getElementById('message');  // 获取消息显示区域
+
+        // ----- 表单提交事件监听 -----
+        // 当用户点击登录按钮或按回车键提交表单时触发
+        form.addEventListener('submit', function(e) {
+            e.preventDefault(); // 阻止表单默认提交行为（不刷新页面，不发送HTTP请求）
+            message.textContent = ''; // 清空之前的消息内容
+
+            // 获取账号输入值，并使用 trim() 去除首尾空格，避免仅空格输入
+            const accountValue = account.value.trim();
+            // 获取密码输入值（密码通常不主动trim，但为了严谨也可trim，避免密码仅空格，这里trim处理）
+            const passwordValue = password.value.trim();
+
+            // 校验1：账号是否为空
+            if (!accountValue) {
+                message.textContent = '请输入账号'; // 显示错误提示
+                return; // 终止函数执行，不继续向下校验
+            }
+
+            // 校验2：密码是否为空
+            if (!passwordValue) {
+                message.textContent = '请输入密码'; // 显示错误提示
+                return; // 终止函数执行
+            }
+
+            // 若以上校验均通过，则模拟登录成功（实际项目中此处应发送AJAX请求到后端验证）
+            // 更改消息文字颜色为绿色（成功色）
+            message.style.color = '#27ae60';
+            // 显示成功提示信息
+            message.textContent = '登录成功！';
+
+            // 可选：在实际项目中，这里会使用 fetch 或 axios 发送请求，
+            // 例如: fetch('/api/login', { method: 'POST', body: JSON.stringify({account: accountValue, password: passwordValue}) })
+            // 并根据返回结果更新 message 内容。
+        });
+    </script>
+</body>
+</html>
